@@ -7,7 +7,7 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
 
   const addToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
+    setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
   };
 
   const removeFromCart = (productId) => {
@@ -17,7 +17,7 @@ export function CartProvider({ children }) {
   const updateQuantity = (productId, quantity) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
+        item.id === productId ? { ...item, quantity: Math.max(0, quantity) } : item
       )
     );
   };

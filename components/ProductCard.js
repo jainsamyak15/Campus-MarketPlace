@@ -40,13 +40,10 @@
 "use client";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useCart } from '../context/CartContext';
 
-export default function ProductCard({ product, isRental = false }) {
-  const { addToCart } = useCart();
-
+export default function ProductCard({ product, addToCart, isRental = false }) {
   const handleAddToCart = () => {
-    addToCart({ ...product, quantity: 1 });
+    addToCart({ ...product, isRental });
   };
 
   return (
@@ -67,16 +64,13 @@ export default function ProductCard({ product, isRental = false }) {
         <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
         <p className="text-gray-600 mb-2">{product.category}</p>
         <p className="text-blue-600 font-bold">
-          {isRental 
-            ? `$${product.price}/day` 
-            : `$${product.price}`
-          }
+          {isRental ? `$${product.price}/day` : `$${product.price}`}
         </p>
         <motion.button
           className="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={isRental ? null : handleAddToCart}
+          onClick={handleAddToCart}
         >
           {isRental ? 'Rent Now' : 'Add to Cart'}
         </motion.button>

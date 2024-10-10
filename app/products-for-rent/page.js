@@ -59,17 +59,20 @@
 // }
 // app/products-for-rent/page.js
 
-"use client"; // Make sure this is a client component
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import CategoryFilter from '../../components/CategoryFilter';
 import { motion } from 'framer-motion';
+import { useCart } from '../../context/CartContext';
 
 export default function ProductsForRent() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [categories, setCategories] = useState(['All']);
+  const { addToCart } = useCart();
 
   // Fetch data from the public products.json file
   useEffect(() => {
@@ -83,6 +86,10 @@ export default function ProductsForRent() {
         const productsForRent = data.filter(product => product.forRent === true);
         setProducts(productsForRent);
         setFilteredProducts(productsForRent);
+
+        // Extract unique categories
+        const uniqueCategories = ['All', ...new Set(productsForRent.map(product => product.category))];
+        setCategories(uniqueCategories);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -114,18 +121,22 @@ export default function ProductsForRent() {
       </motion.h1>
       
       {/* Category filter component */}
-      <CategoryFilter onChange={handleCategoryChange} />
+      <CategoryFilter 
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleCategoryChange}
+      />
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.map((product, index) => (
           <motion.div 
-            key={index}
+            key={product.id || index}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <ProductCard product={product} />
+            <ProductCard product={product} addToCart={addToCart} isRental={true} />
           </motion.div>
         ))}
       </div>

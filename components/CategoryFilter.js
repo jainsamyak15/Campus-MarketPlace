@@ -1,11 +1,9 @@
 "use client";
 import { motion } from 'framer-motion';
 
-const categories = ['All', 'Electronics', 'Stationery', 'Automobiles', 'Household'];
-
-export default function CategoryFilter({ selectedCategory, onCategoryChange }) {
+const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }) => {
   return (
-    <div className="flex flex-wrap justify-center gap-2 mb-8">
+    <div className="flex flex-wrap gap-2 mb-4">
       {categories.map((category) => (
         <motion.button
           key={category}
@@ -23,4 +21,6 @@ export default function CategoryFilter({ selectedCategory, onCategoryChange }) {
       ))}
     </div>
   );
-}
+};
+
+export default CategoryFilter;

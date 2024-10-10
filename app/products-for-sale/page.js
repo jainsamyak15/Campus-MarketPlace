@@ -59,18 +59,19 @@
 // }
 // app/products-for-sale/page.js
 
-"use client"; // Make sure this is a client component
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import CategoryFilter from '../../components/CategoryFilter';
 import { motion } from 'framer-motion';
-import { CartProvider, useCart } from '../../context/CartContext';
+import { useCart } from '../../context/CartContext';
 
 export default function ProductsForSale() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [categories, setCategories] = useState(['All']);
   const { addToCart } = useCart();
 
   // Fetch data from the public products.json file
@@ -85,6 +86,10 @@ export default function ProductsForSale() {
         const productsForSale = data.filter(product => product.forSale === true);
         setProducts(productsForSale);
         setFilteredProducts(productsForSale);
+
+        // Extract unique categories
+        const uniqueCategories = ['All', ...new Set(productsForSale.map(product => product.category))];
+        setCategories(uniqueCategories);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -116,18 +121,22 @@ export default function ProductsForSale() {
       </motion.h1>
       
       {/* Category filter component */}
-      <CategoryFilter onChange={handleCategoryChange} />
+      <CategoryFilter 
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleCategoryChange}
+      />
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.map((product, index) => (
           <motion.div 
-            key={index}
+            key={product.id || index}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <ProductCard product={product} />
+            <ProductCard product={product} addToCart={addToCart} />
           </motion.div>
         ))}
       </div>

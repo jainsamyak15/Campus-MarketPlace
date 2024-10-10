@@ -54,44 +54,51 @@
 //     </motion.div>
 //   );
 // }
-import Image from 'next/image';
+"use client";
+import { useState } from 'react';
 
 export default function CartItem({ item, removeFromCart, updateQuantity }) {
+  const [quantity, setQuantity] = useState(item.quantity);
+
+  const handleQuantityChange = (newQuantity) => {
+    if (newQuantity >= 0) {
+      setQuantity(newQuantity);
+      updateQuantity(item.id, newQuantity);
+    }
+  };
+
   return (
-    <div className="flex items-center border-b border-gray-200 py-4">
-      <div className="flex-shrink-0 w-24 h-24 relative">
-        <Image
-          src={item.image || '/placeholder.png'}
-          alt={item.name}
-          layout="fill"
-          objectFit="cover"
+    <div className="flex items-center justify-between border-b py-2">
+      <div>
+        <h2 className="text-lg font-bold">{item.name}</h2>
+        <p className="text-gray-600">${item.price.toFixed(2)}</p>
+      </div>
+      <div className="flex items-center">
+        <button
+          className="px-2 py-1 bg-gray-200 rounded"
+          onClick={() => handleQuantityChange(quantity - 1)}
+        >
+          -
+        </button>
+        <input
+          type="number"
+          className="mx-2 w-12 text-center border rounded"
+          value={quantity}
+          onChange={(e) => handleQuantityChange(parseInt(e.target.value))}
         />
+        <button
+          className="px-2 py-1 bg-gray-200 rounded"
+          onClick={() => handleQuantityChange(quantity + 1)}
+        >
+          +
+        </button>
+        <button
+          className="ml-4 px-2 py-1 bg-red-500 text-white rounded"
+          onClick={() => removeFromCart(item.id)}
+        >
+          Remove
+        </button>
       </div>
-      <div className="ml-4 flex-grow">
-        <h3 className="text-lg font-semibold">{item.name}</h3>
-        <p className="text-gray-600">${item.price}</p>
-        <div className="flex items-center mt-2">
-          <button
-            className="bg-gray-200 px-2 py-1 rounded-md"
-            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-          >
-            -
-          </button>
-          <span className="mx-2">{item.quantity}</span>
-          <button
-            className="bg-gray-200 px-2 py-1 rounded-md"
-            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-          >
-            +
-          </button>
-        </div>
-      </div>
-      <button
-        className="ml-4 text-red-500"
-        onClick={() => removeFromCart(item.id)}
-      >
-        Remove
-      </button>
     </div>
   );
 }

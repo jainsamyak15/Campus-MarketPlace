@@ -1,0 +1,60 @@
+[
+  {
+    "id": 1,
+    "name": "Product A",
+    "price": 100,
+    "category": "Electronics",
+    "forSale": true
+  },
+  {
+    "id": 2,
+    "name": "Product B",
+    "price": 200,
+    "category": "Furniture",
+    "forRent": true
+  },
+  {
+    "id": 3,
+    "name": "Product A",
+    "price": 100,
+    "category": "Electronics",
+    "forSale": true
+  },
+  {
+    "id": 4,
+    "name": "Product B",
+    "price": 200,
+    "category": "Furniture",
+    "forRent": true
+  },
+  {
+    "id": 5,
+    "name": "Product A",
+    "price": 100,
+    "category": "Electronics",
+    "forSale": true
+  },
+  {
+    "id": 6,
+    "name": "Product B",
+    "price": 200,
+    "category": "Furniture",
+    "forRent": true
+  },
+  {
+    "name": "Samyak Jain",
+    "price": 67,
+    "category": "Electronics",
+    "description": "yg",
+    "forSale": false,
+    "forRent": true
+  },
+  {
+    "name": "fridge",
+    "price": 24,
+    "category": "Stationery",
+    "description": "jns",
+    "forSale": true,
+    "forRent": false
+  }
+]

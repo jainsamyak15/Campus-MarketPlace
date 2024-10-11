@@ -138,82 +138,91 @@ const AddProductForm = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={product.name}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-        <textarea
-          id="description"
-          name="description"
-          value={product.description}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
-      <div>
-        <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
-        <input
-          type="number"
-          id="price"
-          name="price"
-          value={product.price}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
-      <div>
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-        <input
-          type="text"
-          id="category"
-          name="category"
-          value={product.category}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
-      <div className="flex items-center space-x-4">
+    <div className="flex justify-center items-center">
+      <form onSubmit={handleSubmit} className="space-y-4 max-w-lg w-full bg-white p-9 shadow-md rounded-md">
+        <h2 className="text-3xl font-bold mb-6 text-center"></h2>
         <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
           <input
-            type="checkbox"
-            id="forSale"
-            name="forSale"
-            checked={product.forSale}
+            type="text"
+            id="name"
+            name="name"
+            value={product.name}
             onChange={handleChange}
-            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
           />
-          <label htmlFor="forSale" className="ml-2 text-sm font-medium text-gray-700">For Sale</label>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            value={product.description}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+          />
         </div>
         <div>
+          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
           <input
-            type="checkbox"
-            id="forRent"
-            name="forRent"
-            checked={product.forRent}
+            type="number"
+            id="price"
+            name="price"
+            value={product.price}
             onChange={handleChange}
-            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
           />
-          <label htmlFor="forRent" className="ml-2 text-sm font-medium text-gray-700">For Rent</label>
         </div>
-      </div>
-      <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Add Product
-      </button>
-    </form>
+        <div>
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
+          <select
+            id="category"
+            name="category"
+            value={product.category}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+          >
+            <option value="">Select a category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="HouseHold">HouseHold</option>
+            <option value="Automobiles">Automobiles</option>
+            <option value="Stationery">Stationery</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div className="flex items-center space-x-4">
+          <div>
+            <input
+              type="checkbox"
+              id="forSale"
+              name="forSale"
+              checked={product.forSale}
+              onChange={handleChange}
+              className="custom-checkbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
+            <label htmlFor="forSale" className="ml-2 text-sm font-medium text-gray-700">For Sale</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="forRent"
+              name="forRent"
+              checked={product.forRent}
+              onChange={handleChange}
+              className="custom-checkbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
+            <label htmlFor="forRent" className="ml-2 text-sm font-medium text-gray-700">For Rent</label>
+          </div>
+        </div>
+        <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Add Product
+        </button>
+      </form>
+    </div>
   );
 };
 

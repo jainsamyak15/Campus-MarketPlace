@@ -18,3 +18,7 @@ a {
 * {
   box-sizing: border-box;
 }
+.custom-checkbox {
+    width: 18px;
+    height: 18px;
+  }

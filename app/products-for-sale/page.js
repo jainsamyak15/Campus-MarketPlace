@@ -59,6 +59,91 @@
 // }
 // app/products-for-sale/page.js
 
+// "use client";
+
+// import React, { useEffect, useState } from 'react';
+// import ProductCard from '../../components/ProductCard';
+// import CategoryFilter from '../../components/CategoryFilter';
+// import { motion } from 'framer-motion';
+// import { useCart } from '../../context/CartContext';
+
+// export default function ProductsForSale() {
+//   const [products, setProducts] = useState([]);
+//   const [filteredProducts, setFilteredProducts] = useState([]);
+//   const [selectedCategory, setSelectedCategory] = useState('All');
+//   const [categories, setCategories] = useState(['All']);
+//   const { addToCart } = useCart();
+
+//   // Fetch data from the public products.json file
+//   useEffect(() => {
+//     const fetchProducts = async () => {
+//       try {
+//         const response = await fetch('/products.json');
+//         if (!response.ok) {
+//           throw new Error('Failed to fetch products');
+//         }
+//         const data = await response.json();
+//         const productsForSale = data.filter(product => product.forSale === true);
+//         setProducts(productsForSale);
+//         setFilteredProducts(productsForSale);
+
+//         // Extract unique categories
+//         const uniqueCategories = ['All', ...new Set(productsForSale.map(product => product.category))];
+//         setCategories(uniqueCategories);
+//       } catch (error) {
+//         console.error('Error fetching products:', error);
+//       }
+//     };
+
+//     fetchProducts();
+//   }, []);
+
+//   // Handle category change and filter products
+//   const handleCategoryChange = (category) => {
+//     setSelectedCategory(category);
+//     if (category === 'All') {
+//       setFilteredProducts(products);
+//     } else {
+//       const filtered = products.filter(product => product.category === category);
+//       setFilteredProducts(filtered);
+//     }
+//   };
+
+//   return (
+//     <div className="container mx-auto px-4 py-8">
+//       <motion.h1 
+//         className="text-3xl font-bold text-center mb-8"
+//         initial={{ opacity: 0, y: -50 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ duration: 0.5 }}
+//       >
+//         Products for Sale
+//       </motion.h1>
+      
+//       {/* Category filter component */}
+//       <CategoryFilter 
+//         categories={categories}
+//         selectedCategory={selectedCategory}
+//         onCategoryChange={handleCategoryChange}
+//       />
+
+//       {/* Products Grid */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+//         {filteredProducts.map((product, index) => (
+//           <motion.div 
+//             key={product.id || index}
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ delay: index * 0.1 }}
+//           >
+//             <ProductCard product={product} addToCart={addToCart} />
+//           </motion.div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -66,6 +151,7 @@ import ProductCard from '../../components/ProductCard';
 import CategoryFilter from '../../components/CategoryFilter';
 import { motion } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
+import { getProducts } from '../../lib/productData';
 
 export default function ProductsForSale() {
   const [products, setProducts] = useState([]);
@@ -73,32 +159,33 @@ export default function ProductsForSale() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [categories, setCategories] = useState(['All']);
   const { addToCart } = useCart();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch data from the public products.json file
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/products.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        const productsForSale = data.filter(product => product.forSale === true);
-        setProducts(productsForSale);
-        setFilteredProducts(productsForSale);
+        setLoading(true);
+        const allProducts = await getProducts('sale');
+        // Additional check to ensure only products with forSale = true are included
+        const forSaleProducts = allProducts.filter(product => product.forSale === true);
+        setProducts(forSaleProducts);
+        setFilteredProducts(forSaleProducts);
 
         // Extract unique categories
-        const uniqueCategories = ['All', ...new Set(productsForSale.map(product => product.category))];
+        const uniqueCategories = ['All', ...new Set(forSaleProducts.map(product => product.category))];
         setCategories(uniqueCategories);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching products:', error);
+        setError('Failed to load products. Please try again later.');
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
 
-  // Handle category change and filter products
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     if (category === 'All') {
@@ -108,6 +195,14 @@ export default function ProductsForSale() {
       setFilteredProducts(filtered);
     }
   };
+
+  if (loading) {
+    return <div className="text-center py-10">Loading products...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-10 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -120,21 +215,19 @@ export default function ProductsForSale() {
         Products for Sale
       </motion.h1>
       
-      {/* Category filter component */}
       <CategoryFilter 
         categories={categories}
         selectedCategory={selectedCategory}
         onCategoryChange={handleCategoryChange}
       />
 
-      {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredProducts.map((product, index) => (
+        {filteredProducts.map((product) => (
           <motion.div 
-            key={product.id || index}
+            key={product.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: 0.1 }}
           >
             <ProductCard product={product} addToCart={addToCart} />
           </motion.div>

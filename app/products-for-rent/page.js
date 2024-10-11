@@ -66,6 +66,7 @@ import ProductCard from '../../components/ProductCard';
 import CategoryFilter from '../../components/CategoryFilter';
 import { motion } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
+import { getProducts } from '../../lib/productData';
 
 export default function ProductsForRent() {
   const [products, setProducts] = useState([]);
@@ -73,32 +74,33 @@ export default function ProductsForRent() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [categories, setCategories] = useState(['All']);
   const { addToCart } = useCart();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch data from the public products.json file
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/products.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        const productsForRent = data.filter(product => product.forRent === true);
-        setProducts(productsForRent);
-        setFilteredProducts(productsForRent);
+        setLoading(true);
+        const allProducts = await getProducts('rent');
+        // Additional check to ensure only products with forRent = true are included
+        const forRentProducts = allProducts.filter(product => product.forRent === true);
+        setProducts(forRentProducts);
+        setFilteredProducts(forRentProducts);
 
         // Extract unique categories
-        const uniqueCategories = ['All', ...new Set(productsForRent.map(product => product.category))];
+        const uniqueCategories = ['All', ...new Set(forRentProducts.map(product => product.category))];
         setCategories(uniqueCategories);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching products:', error);
+        setError('Failed to load products. Please try again later.');
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
 
-  // Handle category change and filter products
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     if (category === 'All') {
@@ -108,6 +110,14 @@ export default function ProductsForRent() {
       setFilteredProducts(filtered);
     }
   };
+
+  if (loading) {
+    return <div className="text-center py-10">Loading products...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-10 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -120,21 +130,19 @@ export default function ProductsForRent() {
         Products for Rent
       </motion.h1>
       
-      {/* Category filter component */}
       <CategoryFilter 
         categories={categories}
         selectedCategory={selectedCategory}
         onCategoryChange={handleCategoryChange}
       />
 
-      {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredProducts.map((product, index) => (
+        {filteredProducts.map((product) => (
           <motion.div 
-            key={product.id || index}
+            key={product.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: 0.1 }}
           >
             <ProductCard product={product} addToCart={addToCart} isRental={true} />
           </motion.div>

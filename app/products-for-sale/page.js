@@ -167,12 +167,10 @@ export default function ProductsForSale() {
       try {
         setLoading(true);
         const allProducts = await getProducts('sale');
-        // Additional check to ensure only products with forSale = true are included
         const forSaleProducts = allProducts.filter(product => product.forSale === true);
         setProducts(forSaleProducts);
         setFilteredProducts(forSaleProducts);
 
-        // Extract unique categories
         const uniqueCategories = ['All', ...new Set(forSaleProducts.map(product => product.category))];
         setCategories(uniqueCategories);
         setLoading(false);
@@ -197,7 +195,7 @@ export default function ProductsForSale() {
   };
 
   if (loading) {
-    return <div className="text-center py-10">Loading products...</div>;
+    return <div className="text-center py-10 text-gray-600">Loading products...</div>;
   }
 
   if (error) {
@@ -207,7 +205,7 @@ export default function ProductsForSale() {
   return (
     <div className="container mx-auto px-4 py-8">
       <motion.h1 
-        className="text-3xl font-bold text-center mb-8"
+        className="text-4xl font-bold text-center mb-8 text-blue-600"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -221,10 +219,11 @@ export default function ProductsForSale() {
         onCategoryChange={handleCategoryChange}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
         {filteredProducts.map((product) => (
           <motion.div 
             key={product.id}
+            className="transform transition-transform hover:scale-105"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -232,6 +231,16 @@ export default function ProductsForSale() {
             <ProductCard product={product} addToCart={addToCart} />
           </motion.div>
         ))}
+      </div>
+
+      <div className="text-center mt-10">
+        <motion.button 
+          className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md transition duration-300 hover:bg-blue-700"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          View All Products
+        </motion.button>
       </div>
     </div>
   );

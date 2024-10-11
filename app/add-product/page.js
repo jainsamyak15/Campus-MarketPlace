@@ -87,25 +87,36 @@
 
 import { useState } from 'react';
 import AddProductForm from '../../components/AddProductForm';
-import { addProduct } from '../../lib/productData';
+import { addProduct, uploadProductImage } from '../../lib/productData';
 
 export default function AddProduct() {
   const [message, setMessage] = useState('');
 
   const handleAddProduct = async (product) => {
     try {
-      await addProduct(product);
-      setMessage('Product added successfully!');
+      const id = await addProduct(product);
+      setMessage('Product added successfully! You can now upload images.');
+      return id;
     } catch (error) {
       console.error('Error adding product:', error);
-      setMessage('An error occurred. Please try again.');
+      setMessage('An error occurred while adding the product. Please try again.');
+    }
+  };
+
+  const handleImageUpload = async (productId, imageUrl) => {
+    try {
+      await uploadProductImage(productId, imageUrl);
+      setMessage('Image uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setMessage('An error occurred while uploading the image. Please try again.');
     }
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">Add New Product</h1>
-      <AddProductForm onSubmit={handleAddProduct} />
+      <AddProductForm onSubmit={handleAddProduct} onImageUpload={handleImageUpload} />
       {message && <p className="mt-4 text-center">{message}</p>}
     </div>
   );

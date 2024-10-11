@@ -76,6 +76,7 @@
 "use client";
 import { useCart } from '../../context/CartContext';
 import CartItem from '../../components/CartItem';
+import { motion } from 'framer-motion';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useCart();
@@ -89,26 +90,66 @@ export default function CartPage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
+    <div className="container mx-auto p-8">
+      <motion.h1 
+        className="text-4xl font-bold mb-6 text-center text-gray-800"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        Your Cart
+      </motion.h1>
+      
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <motion.p 
+          className="text-center text-lg text-gray-600"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Your cart is empty.
+        </motion.p>
       ) : (
         <>
-          {cart.map((item) => (
-            <CartItem
-              key={item.id}
-              item={item}
-              removeFromCart={removeFromCart}
-              updateQuantity={updateQuantity}
-            />
-          ))}
-          <div className="mt-4">
-            <p className="text-xl font-bold">Total: ${calculateTotal().toFixed(2)}</p>
-          </div>
-          <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
-            Proceed to Checkout
-          </button>
+          {/* Cart Items */}
+          <motion.div
+            className="grid grid-cols-1 gap-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            {cart.map((item) => (
+              <CartItem
+                key={item.id}
+                item={item}
+                removeFromCart={removeFromCart}
+                updateQuantity={updateQuantity}
+              />
+            ))}
+          </motion.div>
+
+          {/* Total Price Section */}
+          <motion.div 
+            className="mt-8 p-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg flex items-center justify-between"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <p className="text-2xl font-semibold">Total:</p>
+            <p className="text-3xl font-bold">${calculateTotal().toFixed(2)}</p>
+          </motion.div>
+
+          {/* Checkout Button */}
+          <motion.div
+            className="text-center mt-6"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <button className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+              Proceed to Checkout
+            </button>
+          </motion.div>
         </>
       )}
     </div>

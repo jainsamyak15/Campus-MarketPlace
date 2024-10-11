@@ -40,31 +40,51 @@
 // components/ProductCard.js
 
 import React from 'react';
-import Image from 'next/image';
+import ImageCarousel from './ImageCarousel';
+import { motion } from 'framer-motion';
 
 const ProductCard = ({ product, addToCart }) => {
   return (
-    <div className="border rounded-lg overflow-hidden shadow-lg">
-      <Image 
-        src={product.imageUrl || '/placeholder-image.jpg'} 
-        alt={product.name} 
-        width={300} 
-        height={200} 
-        layout="responsive"
-      />
-      <div className="p-4">
-        <h2 className="font-bold text-xl mb-2">{product.name}</h2>
-        <p className="text-gray-700 text-base mb-2">{product.description}</p>
-        <p className="text-gray-900 text-xl font-bold mb-2">${product.price}</p>
-        <p className="text-sm text-gray-600 mb-2">Category: {product.category}</p>
-        <button 
-          onClick={() => addToCart(product)} 
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    <motion.div
+      className="bg-white rounded-lg overflow-hidden shadow-md transition-transform transform hover:scale-105 hover:shadow-xl duration-300"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {/* Image Carousel */}
+      <div className="relative">
+        <ImageCarousel images={product.imageUrls} />
+        <span className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold py-1 px-3 rounded-full shadow-lg">
+          {product.category}
+        </span>
+      </div>
+
+      {/* Product Info */}
+      <div className="p-5 flex flex-col items-center">
+        {/* Product Name */}
+        <h2 className="font-bold text-2xl text-gray-900 text-center mb-2">
+          {product.name}
+        </h2>
+
+        {/* Product Description */}
+        <p className="text-gray-600 text-base mb-4 text-center line-clamp-2">
+          {product.description}
+        </p>
+
+        {/* Price */}
+        <p className="text-2xl font-extrabold text-blue-500 mb-4">
+          ${product.price}
+        </p>
+
+        {/* Add to Cart Button */}
+        <motion.button
+          onClick={() => addToCart(product)}
+          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-blue-500 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out"
+          whileHover={{ scale: 1.1 }}
         >
           Add to Cart
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

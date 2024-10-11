@@ -114,7 +114,7 @@
 
 import React, { useState } from 'react';
 
-const AddProductForm = ({ onSubmit }) => {
+const AddProductForm = ({ onSubmit, onImageUpload }) => {
   const [product, setProduct] = useState({
     name: '',
     description: '',
@@ -123,6 +123,8 @@ const AddProductForm = ({ onSubmit }) => {
     forSale: false,
     forRent: false
   });
+  const [images, setImages] = useState([]);
+  const [productId, setProductId] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -132,17 +134,44 @@ const AddProductForm = ({ onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleImageChange = (e) => {
+    setImages([...e.target.files]);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(product);
+    const newProductId = await onSubmit(product);
+    setProductId(newProductId);
+  };
+
+  const handleImageUpload = async () => {
+    if (productId && images.length > 0) {
+      for (let image of images) {
+        const formData = new FormData();
+        formData.append('file', image);
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const { fileUrl } = await response.json();
+          await onImageUpload(productId, fileUrl);
+        } else {
+          console.error('Failed to upload image');
+        }
+      }
+      setImages([]);
+    }
   };
 
   return (
-    <div className="flex justify-center items-center">
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-lg w-full bg-white p-9 shadow-md rounded-md">
-        <h2 className="text-3xl font-bold mb-6 text-center"></h2>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 via-blue-200 to-purple-300">
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-lg w-full bg-white p-9 shadow-lg rounded-2xl">
+        <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-900"></h2>
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+          <label htmlFor="name" className="block text-lg font-medium text-gray-800">Product Name</label>
           <input
             type="text"
             id="name"
@@ -150,22 +179,22 @@ const AddProductForm = ({ onSubmit }) => {
             value={product.name}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+        <div>
+          <label htmlFor="description" className="block text-lg font-medium text-gray-800">Description</label>
           <textarea
             id="description"
             name="description"
             value={product.description}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
           />
         </div>
         <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+          <label htmlFor="price" className="block text-lg font-medium text-gray-800">Price</label>
           <input
             type="number"
             id="price"
@@ -173,18 +202,18 @@ const AddProductForm = ({ onSubmit }) => {
             value={product.price}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
           />
         </div>
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
+          <label htmlFor="category" className="block text-lg font-medium text-gray-800">Category</label>
           <select
             id="category"
             name="category"
             value={product.category}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
           >
             <option value="">Select a category</option>
             <option value="Electronics">Electronics</option>
@@ -194,33 +223,55 @@ const AddProductForm = ({ onSubmit }) => {
             <option value="Other">Other</option>
           </select>
         </div>
-        <div className="flex items-center space-x-4">
-          <div>
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center">
             <input
               type="checkbox"
               id="forSale"
               name="forSale"
               checked={product.forSale}
               onChange={handleChange}
-              className="custom-checkbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="custom-checkbox rounded border-gray-300 text-purple-500 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200"
             />
-            <label htmlFor="forSale" className="ml-2 text-sm font-medium text-gray-700">For Sale</label>
+            <label htmlFor="forSale" className="ml-3 text-md font-medium text-gray-800">For Sale</label>
           </div>
-          <div>
+          <div className="flex items-center">
             <input
               type="checkbox"
               id="forRent"
               name="forRent"
               checked={product.forRent}
               onChange={handleChange}
-              className="custom-checkbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="custom-checkbox rounded border-gray-300 text-purple-500 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200"
             />
-            <label htmlFor="forRent" className="ml-2 text-sm font-medium text-gray-700">For Rent</label>
+            <label htmlFor="forRent" className="ml-3 text-md font-medium text-gray-800">For Rent</label>
           </div>
         </div>
-        <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <div className="mt-6">
+          <label htmlFor="images" className="block text-lg font-medium text-gray-800">Product Images</label>
+          <input
+            type="file"
+            onChange={handleImageChange}
+            multiple
+            accept="image/*"
+            className="mt-2 block w-full text-gray-900 bg-white rounded-lg border-gray-300 cursor-pointer shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200"
+          />
+        </div>
+        <button
+          type="submit"
+          className="mt-8 w-full bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 hover:from-purple-500 hover:via-pink-600 hover:to-red-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300"
+        >
           Add Product
         </button>
+        {productId && images.length > 0 && (
+          <button
+            type="button"
+            onClick={handleImageUpload}
+            className="mt-4 w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300"
+          >
+            Upload Images
+          </button>
+        )}
       </form>
     </div>
   );

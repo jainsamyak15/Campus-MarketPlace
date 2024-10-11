@@ -64,8 +64,11 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const product = await request.json();
-    const id = await addProduct(product);
+    const formData = await request.formData();
+    const product = JSON.parse(formData.get('product'));
+    const images = formData.getAll('images');
+    
+    const id = await addProduct(product, images);
     return NextResponse.json({ id, message: 'Product added successfully' }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to add product' }, { status: 500 });

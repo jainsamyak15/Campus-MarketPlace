@@ -56,6 +56,7 @@
 // }
 "use client";
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function CartItem({ item, removeFromCart, updateQuantity }) {
   const [quantity, setQuantity] = useState(item.quantity);
@@ -68,37 +69,45 @@ export default function CartItem({ item, removeFromCart, updateQuantity }) {
   };
 
   return (
-    <div className="flex items-center justify-between border-b py-2">
-      <div>
-        <h2 className="text-lg font-bold">{item.name}</h2>
-        <p className="text-gray-600">${item.price.toFixed(2)}</p>
+    <motion.div 
+      className="flex items-center justify-between border-b py-4 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out"
+      whileHover={{ scale: 1.02 }}
+    >
+      {/* Item details */}
+      <div className="flex-1">
+        <h2 className="text-xl font-bold text-gray-800">{item.name}</h2>
+        <p className="text-gray-500 mt-1">${item.price.toFixed(2)}</p>
       </div>
-      <div className="flex items-center">
+
+      {/* Quantity controls */}
+      <div className="flex items-center space-x-4">
         <button
-          className="px-2 py-1 bg-gray-200 rounded"
+          className="px-3 py-2 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-700 font-bold rounded-lg shadow-md"
           onClick={() => handleQuantityChange(quantity - 1)}
         >
           -
         </button>
         <input
           type="number"
-          className="mx-2 w-12 text-center border rounded"
+          className="w-12 text-center bg-gray-50 border border-gray-300 rounded-lg py-1 shadow-inner"
           value={quantity}
           onChange={(e) => handleQuantityChange(parseInt(e.target.value))}
         />
         <button
-          className="px-2 py-1 bg-gray-200 rounded"
+          className="px-3 py-2 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-700 font-bold rounded-lg shadow-md"
           onClick={() => handleQuantityChange(quantity + 1)}
         >
           +
         </button>
-        <button
-          className="ml-4 px-2 py-1 bg-red-500 text-white rounded"
-          onClick={() => removeFromCart(item.id)}
-        >
-          Remove
-        </button>
       </div>
-    </div>
+
+      {/* Remove button */}
+      <button
+        className="ml-6 px-4 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-500 transition-all ease-in-out"
+        onClick={() => removeFromCart(item.id)}
+      >
+        Remove
+      </button>
+    </motion.div>
   );
 }

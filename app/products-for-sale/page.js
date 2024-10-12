@@ -143,15 +143,14 @@
 //     </div>
 //   );
 // }
-
 "use client";
-
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import CategoryFilter from '../../components/CategoryFilter';
 import { motion } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import { getProducts } from '../../lib/productData';
+import AddToCartModal from '../../components/AddToCartModal'; // Import the modal component
 
 export default function ProductsForSale() {
   const [products, setProducts] = useState([]);
@@ -161,6 +160,8 @@ export default function ProductsForSale() {
   const { addToCart } = useCart();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [selectedProduct, setSelectedProduct] = useState(null); // Store product added to cart
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -183,6 +184,19 @@ export default function ProductsForSale() {
 
     fetchProducts();
   }, []);
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+
+    // Set the selected product and show the modal
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false); // Close the modal
+    setSelectedProduct(null); // Reset the selected product
+  };
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
@@ -228,20 +242,19 @@ export default function ProductsForSale() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <ProductCard product={product} addToCart={addToCart} />
+            <ProductCard product={product} addToCart={handleAddToCart} />
           </motion.div>
         ))}
       </div>
 
-      <div className="text-center mt-10">
-        <motion.button 
-          className="bg-blue-600 text-white font-bold py-2 px-6 rounded-md transition duration-300 hover:bg-blue-700"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          View All Products
-        </motion.button>
-      </div>
+      {/* AddToCart Modal */}
+      {selectedProduct && (
+        <AddToCartModal
+          product={selectedProduct}
+          isVisible={showModal}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 }

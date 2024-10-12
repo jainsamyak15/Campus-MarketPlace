@@ -124,6 +124,7 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
     forRent: false
   });
   const [images, setImages] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]); // State for image URLs
   const [productId, setProductId] = useState(null);
 
   const handleChange = (e) => {
@@ -138,14 +139,23 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
     setImages([...e.target.files]);
   };
 
+  const handleImageUrlChange = (e) => {
+    setImageUrls(e.target.value.split(',').map(url => url.trim())); // Split by comma for multiple URLs
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newProductId = await onSubmit(product);
     setProductId(newProductId);
-  };
 
-  const handleImageUpload = async () => {
-    if (productId && images.length > 0) {
+    // Check if there are valid image URLs
+    if (imageUrls.length > 0) {
+      // Upload URLs directly without the Upload button
+      for (let url of imageUrls) {
+        await onImageUpload(newProductId, url);
+      }
+    } else if (images.length > 0) {
+      // Handle image uploads if there are files
       for (let image of images) {
         const formData = new FormData();
         formData.append('file', image);
@@ -157,13 +167,25 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
 
         if (response.ok) {
           const { fileUrl } = await response.json();
-          await onImageUpload(productId, fileUrl);
+          await onImageUpload(newProductId, fileUrl);
         } else {
           console.error('Failed to upload image');
         }
       }
-      setImages([]);
     }
+
+    // Reset the form fields
+    setProduct({
+      name: '',
+      description: '',
+      price: '',
+      category: '',
+      forSale: false,
+      forRent: false
+    });
+    setImages([]);
+    setImageUrls([]);
+    setProductId(null);
   };
 
   return (
@@ -194,7 +216,7 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
           />
         </div>
         <div>
-          <label htmlFor="price" className="block text-lg font-medium text-gray-800">Price</label>
+          <label htmlFor="price" className="block text-lg font-medium text-gray-800">Price(In Dollars)</label>
           <input
             type="number"
             id="price"
@@ -256,6 +278,13 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
             accept="image/*"
             className="mt-2 block w-full text-gray-900 bg-white rounded-lg border-gray-300 cursor-pointer shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200"
           />
+          <p className="text-gray-600 text-sm mt-2">Or provide image URLs separated by commas</p>
+          <input
+            type="text"
+            onChange={handleImageUrlChange}
+            placeholder="Enter image URLs"
+            className="mt-2 block w-full text-gray-900 bg-white rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
+          />
         </div>
         <button
           type="submit"
@@ -263,15 +292,6 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
         >
           Add Product
         </button>
-        {productId && images.length > 0 && (
-          <button
-            type="button"
-            onClick={handleImageUpload}
-            className="mt-4 w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300"
-          >
-            Upload Images
-          </button>
-        )}
       </form>
     </div>
   );

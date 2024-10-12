@@ -2,7 +2,8 @@
 const nextConfig = {
     reactStrictMode: true,
     images: {
-      domains: ['placekitten.com','localhost'], // Add any external image domains you might use
+      // domains: ['placekitten.com','localhost'], // Add any external image domains you might use
+      unoptimized: true,
     },
   }
   

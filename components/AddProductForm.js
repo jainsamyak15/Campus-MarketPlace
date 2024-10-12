@@ -190,8 +190,8 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 via-blue-200 to-purple-300">
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-lg w-full bg-white p-9 shadow-lg rounded-2xl">
-        <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-900"></h2>
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-lg w-full bg-white p-4 shadow-lg rounded-2xl">
+        {/* <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-900"></h2> */}
         <div>
           <label htmlFor="name" className="block text-lg font-medium text-gray-800">Product Name</label>
           <input
@@ -201,7 +201,7 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
             value={product.name}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-2 text-lg"
           />
         </div>
         <div>
@@ -212,7 +212,7 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
             value={product.description}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-2 text-lg"
           />
         </div>
         <div>
@@ -224,7 +224,7 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
             value={product.price}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-2 text-lg"
           />
         </div>
         <div>
@@ -235,7 +235,7 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
             value={product.category}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
+            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-2 text-lg"
           >
             <option value="">Select a category</option>
             <option value="Electronics">Electronics</option>
@@ -283,7 +283,7 @@ const AddProductForm = ({ onSubmit, onImageUpload }) => {
             type="text"
             onChange={handleImageUrlChange}
             placeholder="Enter image URLs"
-            className="mt-2 block w-full text-gray-900 bg-white rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-3 text-lg"
+            className="mt-2 block w-full text-gray-900 bg-white rounded-lg border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 p-2 text-lg"
           />
         </div>
         <button
